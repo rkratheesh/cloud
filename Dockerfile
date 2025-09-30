@@ -41,5 +41,5 @@ RUN python manage.py collectstatic --noinput && \
 
 # Expose the application port 
 EXPOSE 8000              
-CMD ['python', 'manage.py', 'runserver']
+CMD ['python3', 'manage.py', 'runserver']
 # CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
