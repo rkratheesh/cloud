@@ -1,0 +1,226 @@
+<style>
+.alert-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 0.7em;
+    line-height: 1;
+}
+
+.subscription-banner {
+    background-color: #dc2626;      
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    position: relative;
+    z-index: 50;
+}
+
+.subscription-banner.hidden {
+    display: block;
+}
+
+.banner-container {
+    width: 100%;
+    padding: 6px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+}
+
+@media (min-width: 640px) {
+    .banner-container {
+        padding: 6px 50px 6px 282px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 40px;
+    }
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.logo-img {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+}
+
+.logo-text {
+    color: white;
+    font-weight: 500;
+}
+
+.message-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1;
+    justify-content: center;
+    text-align: center;
+}
+
+.message-text {
+    color: white;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+    .message-text {
+        font-size: 14px;
+    }
+}
+
+.days-left {
+    color: white;
+    font-weight: 500;
+}
+
+.button-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+}
+
+@media (min-width: 640px) {
+    .button-section {
+        flex-direction: row;
+        width: auto;
+        align-items: center;
+    }
+}
+
+.view-subscription-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 14px;
+    border: 1px solid white;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 4px;
+    color: #dc2626;
+    background-color: white;
+    text-decoration: none;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+}
+
+.view-subscription-btn:hover {
+    background-color: #fef2f2;
+}
+
+.view-subscription-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.close-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 12px;
+    padding: 4px;
+    color: white;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #dc2626;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.close-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.close-icon {
+    height: 14px;
+    width: 14px;
+}
+</style>
+<!-- _subscription_banner.html -->
+<div id="subscription-banner" class="subscription-banner " style="display: none;">
+    <div class="banner-container">
+        <div class="logo-section " style="margin-left:-25.8%;">
+            <img src="https://placehold.co/20x20/ffffff/ef4444?text=H" alt="Horilla Logo" class="logo-img">
+            <span class="logo-text">Horilla cloud</span>
+        </div>
+        <div class="message-section">
+            <span class="alert-icon">!</span>
+            <p class="message-text">
+                Your Subscription Expires in <span id="days-left" class="days-left"></span> Days!
+            </p>
+        </div>
+        <div class="button-section">
+            <a href="" id="viewSubscriptionLink" class="view-subscription-btn">
+                View Subscription
+            </a>
+        </div>
+    </div>
+    <button id="close-banner-btn" class="close-btn">
+        <svg class="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+</div>
+
+<script>
+// Simple close button functionality
+document.addEventListener('DOMContentLoaded', function () {
+    fetch("{% url 'check_cloud_subscription_validity' %}")
+        .then(response => response.json())
+        .then(data => {
+            const banner = document.getElementById('subscription-banner');
+            const closeBtn = document.getElementById('close-banner-btn');
+            const daysLeftSpan = document.getElementById('days-left');
+            const viewSubscriptionLink = document.getElementById('viewSubscriptionLink')
+            if (data.validity !== null && data.validity <= 7) {
+                if (daysLeftSpan) {
+                    daysLeftSpan.textContent = data.validity;
+                }
+                if (viewSubscriptionLink && data.subscription_link) {
+                        viewSubscriptionLink.href = data.subscription_link;
+                    }
+                banner.style.display = 'flex';
+            }
+
+            if (closeBtn && banner) {
+                closeBtn.addEventListener('click', () => {
+                    banner.style.display = 'none';
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error checking subscription validity:', error);
+        });
+});
+</script>

@@ -1,0 +1,6 @@
+ {% if request.user.is_superuser %} 
+<hr />
+    <li class="oh-dropdown__item red">
+    <a href="https://cloud.horilla.com/tenant/instance-list-view" class="oh-dropdown__link" style="padding: 5px;color: white!important;background-color: red!important;margin: -5px;border-radius: 5px;">View organization</a>
+</li>
+{%endif%}    
