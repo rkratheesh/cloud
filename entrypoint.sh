@@ -1,18 +1,17 @@
 #!/bin/bash
-# Exit immediately if a command fails
 set -e
 
-# Run migrations
-echo "Running migrations..."
+# Create migrations for all apps
+python manage.py makemigrations
+
+# Apply migrations
 python manage.py migrate
 
-# Collect static files
-echo "Collecting static files..."
+# Collect static
 python manage.py collectstatic --noinput
 
 # Compile translations
-echo "Compiling messages..."
 python manage.py compilemessages
 
-# Start Supervisor (or your app)
+# Start Supervisor
 exec "$@"
