@@ -115,32 +115,40 @@ import dj_database_url
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if env("DATABASE_URL", default=None):
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600,
-            ssl_require=True  # Railway requires SSL
-        )
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True  # Railway requires SSL
+    )
+}
 
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": env("DB_ENGINE", default="django.db.backends.sqlite3"),
-            "NAME": env(
-                "DB_NAME",
-                default=os.path.join(
-                    BASE_DIR,
-                    "TestDB_Horilla.sqlite3",
-                ),
-            ),
-            "USER": env("DB_USER", default=""),
-            "PASSWORD": env("DB_PASSWORD", default=""),
-            "HOST": env("DB_HOST", default=""),
-            "PORT": env("DB_PORT", default=""),
-        }
-    }
+# if env("DATABASE_URL", default=None):
+#     DATABASES = {
+#         'default': dj_database_url.config(
+#             default=os.environ.get('DATABASE_URL'),
+#             conn_max_age=600,
+#             ssl_require=True  # Railway requires SSL
+#         )
+#     }
+
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": env("DB_ENGINE", default="django.db.backends.sqlite3"),
+#             "NAME": env(
+#                 "DB_NAME",
+#                 default=os.path.join(
+#                     BASE_DIR,
+#                     "TestDB_Horilla.sqlite3",
+#                 ),
+#             ),
+#             "USER": env("DB_USER", default=""),
+#             "PASSWORD": env("DB_PASSWORD", default=""),
+#             "HOST": env("DB_HOST", default=""),
+#             "PORT": env("DB_PORT", default=""),
+#         }
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
