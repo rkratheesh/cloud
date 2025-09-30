@@ -32,14 +32,17 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copy the rest of the application files
 COPY . .
 
-RUN python manage.py makemigrations && \
-    python manage.py migrate && \
-    python manage.py collectstatic --noinput && \
-    python manage.py compilemessages && \
-    python manage.py showmigrations sessions
-
-
 # Expose the application port 
-EXPOSE 8000              
-CMD ["python3", "manage.py", "runserver"]
-# CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+EXPOSE 8000            
+  
+# Copy the entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+
+# Make it executable
+RUN chmod +x /entrypoint.sh
+
+# Use entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Start Supervisor
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
