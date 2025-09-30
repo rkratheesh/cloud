@@ -34,9 +34,10 @@ COPY . .
 
 RUN python manage.py collectstatic --noinput && \
     python manage.py compilemessages && \
-    python manage.py makemigrations 
+    python manage.py makemigrations && \
+    python manage.py migrate
 
 # Expose the application port 
 EXPOSE 8000              
-   
+
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
