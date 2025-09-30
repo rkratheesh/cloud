@@ -32,10 +32,10 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Copy the rest of the application files
 COPY . .
 
-RUN python manage.py collectstatic --noinput && \
+RUN python manage.py makemigrations && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput && \
     python manage.py compilemessages && \
-    python manage.py makemigrations && \
-    python manage.py migrate &&\
     python manage.py showmigrations sessions
 
 
